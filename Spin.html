@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Spin the Wheel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            margin: 10px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .wheel-container {
+            position: relative;
+            display: inline-block;
+            margin: 30px 0;
+        }
+
+        #wheel {
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            border: 12px solid #2c3e50;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-origin: 50% 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 35px solid #e74c3c;
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            border-radius: 50%;
+            border: 4px solid #fff;
+            z-index: 15;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            min-width: 200px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-spin {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-size: 18px;
+            padding: 15px 30px;
+        }
+
+        .btn-spin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-spin:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .categories {
+            margin: 20px 0;
+        }
+
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .category-item {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-wheel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 18px;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 15px;
+                margin: 5px;
+                border-radius: 15px;
+            }
+
+            #wheel {
+                width: 320px;
+                height: 320px;
+            }
+
+            .center-circle {
+                width: 50px;
+                height: 50px;
+            }
+
+            .pointer {
+                border-left: 16px solid transparent;
+                border-right: 16px solid transparent;
+                border-top: 28px solid #e74c3c;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .input-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                min-width: auto;
+                margin-bottom: 10px;
+            }
+
+            .btn-add, .btn-spin {
+                width: 100%;
+                padding: 12px 20px;
+            }
+
+            .wheel-container {
+                margin: 20px 0;
+            }
+
+            .category-list {
+                gap: 8px;
+            }
+
+            .category-item {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .result {
+                font-size: 20px;
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            /* Adjust text radius for smaller wheels */
+            .wheel-segment span {
+                font-size: 11px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #wheel {
+                width: 280px;
+                height: 280px;
+            }
+
+            .center-circle {
+                width: 40px;
+                height: 40px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .wheel-segment {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Interactive Spin the Wheel</h1>
+        
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div id="wheel">
+                <div class="empty-wheel">Add categories to start!</div>
+            </div>
+            <div class="center-circle"></div>
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="categoryInput" placeholder="Enter a category..." maxlength="20">
+                <button class="btn-add" onclick="addCategory()">Add Category</button>
+            </div>
+            <button class="btn-spin" id="spinBtn" onclick="spinWheel()" disabled>🎲 Spin the Wheel</button>
+        </div>
+
+        <div class="categories">
+            <h3>Categories:</h3>
+            <div class="category-list" id="categoryList"></div>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let categories = [];
+        let isSpinning = false;
+        let currentRotation = 0;
+        let spinInterval;
+
+        // Color palette matching PickerWheel.com style
+        const colors = [
+            '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6',
+            '#e67e22', '#1abc9c', '#34495e', '#f1c40f', '#95a5a6',
+            '#c0392b', '#2980b9', '#27ae60', '#d35400', '#8e44ad',
+            '#16a085', '#2c3e50', '#f39800', '#7f8c8d', '#8b4513'
+        ];
+
+        function addCategory() {
+            const input = document.getElementById('categoryInput');
+            const category = input.value.trim();
+            
+            if (category && !categories.includes(category)) {
+                if (categories.length >= 40) {
+                    alert('Maximum 40 categories allowed!');
+                    return;
+                }
+                categories.push(category);
+                input.value = '';
+                updateCategoryList();
+                updateWheel();
+                updateSpinButton();
+            }
+        }
+
+        function removeCategory(index) {
+            if (categories.length <= 2) {
+                alert('Minimum 2 categories required!');
+                return;
+            }
+            categories.splice(index, 1);
+            updateCategoryList();
+            updateWheel();
+            updateSpinButton();
+        }
+
+        function updateCategoryList() {
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '';
+            
+            categories.forEach((category, index) => {
+                const categoryItem = document.createElement('div');
+                categoryItem.className = 'category-item';
+                categoryItem.innerHTML = `
+                    ${category}
+                    <button class="remove-btn" onclick="removeCategory(${index})">×</button>
+                `;
+                categoryList.appendChild(categoryItem);
+            });
+        }
+
+        function updateWheel() {
+            const wheel = document.getElementById('wheel');
+            wheel.innerHTML = '';
+            
+            if (categories.length === 0) {
+                wheel.innerHTML = '<div class="empty-wheel">Add categories to start!</div>';
+                return;
+            }
+
+            const segmentAngle = 360 / categories.length;
+            
+            categories.forEach((category, index) => {
+                const segment = document.createElement('div');
+                segment.className = 'wheel-segment';
+                segment.style.backgroundColor = colors[index % colors.length];
+                segment.style.transform = `rotate(${index * segmentAngle}deg)`;
+                
+                // Create proper pie slice using SVG approach for better accuracy
+                const svgClipPath = createSVGPieSlice(segmentAngle, index);
+                segment.style.clipPath = svgClipPath;
+                
+                // Add text with perfect centering
+                const textSpan = document.createElement('span');
+                textSpan.textContent = category;
+                textSpan.style.position = 'absolute';
+                textSpan.style.left = '50%';
+                textSpan.style.top = '50%';
+                
+                // Calculate the radius for text positioning based on wheel size
+                const wheelSize = parseInt(getComputedStyle(wheel).width);
+                const textRadius = wheelSize * 0.3; // 30% of wheel radius for optimal positioning
+                const angleInRadians = (segmentAngle / 2) * (Math.PI / 180);
+                const textX = Math.sin(angleInRadians) * textRadius;
+                const textY = -Math.cos(angleInRadians) * textRadius;
+                
+                textSpan.style.transform = `translate(-50%, -50%) translate(${textX}px, ${textY}px) rotate(${segmentAngle / 2}deg)`;
+                textSpan.style.transformOrigin = 'center';
+                textSpan.style.whiteSpace = 'nowrap';
+                textSpan.style.textAlign = 'center';
+                textSpan.style.pointerEvents = 'none';
+                
+                // Dynamic font sizing based on segment angle and text length
+                let fontSize = Math.max(8, Math.min(16, segmentAngle / 3));
+                if (category.length > 10) fontSize = Math.max(6, fontSize - 2);
+                if (categories.length > 20) fontSize = Math.max(6, fontSize - 2);
+                
+                textSpan.style.fontSize = fontSize + 'px';
+                textSpan.style.fontWeight = '600';
+                
+                // Set text color to match the segment's background color
+                const segmentColor = colors[index % colors.length];
+                textSpan.style.color = segmentColor;
+                textSpan.style.textShadow = '2px 2px 4px rgba(255,255,255,0.9), -1px -1px 2px rgba(255,255,255,0.7)';
+                
+                textSpan.style.maxWidth = `${Math.max(60, segmentAngle * 2)}px`;
+                textSpan.style.overflow = 'hidden';
+                textSpan.style.textOverflow = 'ellipsis';
+                
+                // Truncate very long text for small segments
+                if (segmentAngle < 20 && category.length > 8) {
+                    textSpan.textContent = category.substring(0, 6) + '...';
+                } else if (segmentAngle < 30 && category.length > 12) {
+                    textSpan.textContent = category.substring(0, 10) + '...';
+                }
+                
+                segment.appendChild(textSpan);
+                wheel.appendChild(segment);
+            });
+        }
+
+        function createSVGPieSlice(segmentAngle, index) {
+            // Create precise pie slice using polygon points
+            const centerX = 50;
+            const centerY = 50;
+            const radius = 50;
+            
+            // Calculate the number of points needed for smooth arc
+            const numPoints = Math.max(3, Math.ceil(segmentAngle / 15));
+            const points = [`${centerX}% ${centerY}%`]; // Start at center
+            
+            // Generate points along the arc
+            for (let i = 0; i <= numPoints; i++) {
+                const angle = (i / numPoints) * segmentAngle;
+                const radian = (angle * Math.PI) / 180;
+                const x = centerX + radius * Math.sin(radian);
+                const y = centerY - radius * Math.cos(radian);
+                points.push(`${x}% ${y}%`);
+            }
+            
+            return `polygon(${points.join(', ')})`;
+        }
+
+        function updateSpinButton() {
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = categories.length === 0 || isSpinning;
+        }
+
+        function spinWheel() {
+            if (categories.length === 0 || isSpinning) return;
+            
+            isSpinning = true;
+            const spinBtn = document.getElementById('spinBtn');
+            const result = document.getElementById('result');
+            const wheel = document.getElementById('wheel');
+            
+            spinBtn.textContent = '🎯 Spinning...';
+            spinBtn.disabled = true;
+            result.style.display = 'none';
+            
+            // Calculate random final rotation (multiple full spins + random position)
+            const minSpins = 5; // Minimum number of full rotations
+            const maxSpins = 10; // Maximum number of full rotations
+            const randomSpins = Math.random() * (maxSpins - minSpins) + minSpins;
+            const randomAngle = Math.random() * 360;
+            const totalRotation = currentRotation + (randomSpins * 360) + randomAngle;
+            
+            // Apply the spin with smooth animation
+            wheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            
+            // Calculate winner and show result after animation completes
+            setTimeout(() => {
+                const segmentAngle = 360 / categories.length;
+                const normalizedRotation = ((totalRotation % 360) + 360) % 360;
+                const segmentAtTop = Math.floor((360 - normalizedRotation + segmentAngle/2) / segmentAngle) % categories.length;
+                const winner = categories[segmentAtTop];
+                
+                showResult(winner);
+                resetSpinButton();
+                currentRotation = totalRotation % 360;
+                
+                // Remove transition for next spin
+                setTimeout(() => {
+                    wheel.style.transition = 'none';
+                }, 100);
+            }, 4000);
+        }
+
+        function resetSpinButton() {
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.textContent = '� Spin the Wheel';
+            spinBtn.disabled = false;
+            isSpinning = false;
+        }
+
+        function showResult(winner) {
+            const result = document.getElementById('result');
+            result.innerHTML = `🎉 Winner: <strong>${winner}</strong> 🎉`;
+            result.style.display = 'block';
+        }
+
+        // Allow adding categories with Enter key
+        document.getElementById('categoryInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addCategory();
+            }
+        });
+
+        // Add some default categories for demonstration
+        const defaultCategories = ['Pizza', 'Burger'];
+        defaultCategories.forEach(category => {
+            categories.push(category);
+        });
+        updateCategoryList();
+        updateWheel();
+        updateSpinButton();
+    </script>
+</body>
+</html>
