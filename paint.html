@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,7 +107,6 @@
 
     <button id="clearButton">Clear</button>
     <button id="eraserButton">Eraser</button>
-    <button id="fillButton">Fill</button> <!-- Added Fill Button -->
   </div>
 
   <script>
@@ -212,11 +212,6 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function fillCanvas() {
-      ctx.fillStyle = colorPicker.value;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
     // --- Event Listeners ---
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mouseup', stopDrawing);
@@ -234,7 +229,6 @@
     const brushTypeSelect = document.getElementById('brushType');
     const clearButton = document.getElementById('clearButton');
     const eraserButton = document.getElementById('eraserButton');
-    const fillButton = document.getElementById('fillButton'); // Get fill button
 
     eraserButton.addEventListener('click', function() {
       isErasing = !isErasing;
@@ -245,7 +239,6 @@
       brushType = this.value;
     });
     clearButton.addEventListener('click', clearCanvas);
-    fillButton.addEventListener('click', fillCanvas); // Add event listener for fill
   </script>
 </body>
 </html>
