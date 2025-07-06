@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PAINT !</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      background: linear-gradient(45deg, #f06, #3cc, #609, #c33);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      color: white;
+      overflow: hidden; /* Prevent scrolling */
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #paintingCanvas {
+      border: 2px solid #000;
+      touch-action: none;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      border-radius: 5px;
+      max-width: 90%; /* Limit width for smaller screens */
+    }
+
+    .controls label,
+    .controls input,
+    .controls select,
+    .controls button {
+      color: black;
+      font-size: 14px; /* Adjust font size for smaller screens */
+    }
+
+    /* Mobile-specific adjustments */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 24px;
+      }
+      .controls {
+        flex-direction: column; /* Stack controls on small screens */
+        align-items: stretch; /* Stretch controls to full width */
+      }
+      .controls label,
+      .controls input,
+      .controls select,
+      .controls button {
+        width: 100%; /* Make controls full width */
+        margin-bottom: 5px; /* Add spacing between stacked controls */
+        box-sizing: border-box; /* Include padding and border in element's total width and height */
+      }
+      #paintingCanvas {
+        width: 95vw;  /* Make canvas take up almost full width */
+        height: 60vh; /* Adjust height as needed */
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>PAINT !</h1>
+  <canvas id="paintingCanvas" width="800" height="600"></canvas>
+
+  <div class="controls">
+    <label for="colorPicker">Choose Color:</label>
+    <input type="color" id="colorPicker" value="#000000">
+
+    <label for="lineWidth">Line Width:</label>
+    <input type="number" id="lineWidth" value="10" min="5" max="120">
+
+    <label for="brushType">Brush Type:</label>
+    <select id="brushType">
+      <option value="round">Round</option>
+      <option value="square">Square</option>
+      <option value="triangle">Triangle</option>
+    </select>
+
+    <button id="clearButton">Clear</button>
+    <button id="eraserButton">Eraser</button>
+    <button id="fillButton">Fill</button> <!-- Added Fill Button -->
+  </div>
+
+  <script>
+    // Canvas setup
+    const canvas = document.getElementById('paintingCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Drawing state
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    // Default settings
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 10; // Default width is now 10
+    ctx.lineJoin = ctx.lineCap = 'round';
+    let brushType = 'round';
+    let isErasing = false;
+
+    // --- Functions ---
+    function getCanvasOffset() {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY
+      };
+    }
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const canvasOffset = getCanvasOffset();
+      lastX = (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - canvasOffset.left;
+      lastY = (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - canvasOffset.top;
+      e.preventDefault();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+
+      const canvasOffset = getCanvasOffset();
+      const x = (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - canvasOffset.left;
+      const y = (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - canvasOffset.top;
+
+      ctx.strokeStyle = isErasing ? 'white' : colorPicker.value;
+      ctx.lineWidth = lineWidthInput.value;
+
+      switch (brushType) {
+        case 'round':
+          ctx.lineJoin = ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          break;
+        case 'square':
+          ctx.lineJoin = ctx.lineCap = 'square';
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          break;
+        case 'triangle':
+          drawTriangle(lastX, lastY, x, y);
+          break;
+      }
+
+      lastX = x;
+      lastY = y;
+      e.preventDefault();
+    }
+
+    function drawTriangle(x1, y1, x2, y2) {
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+      const triangleSize = ctx.lineWidth * 2;
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+
+      const p1x = x2 + Math.cos(angle) * triangleSize;
+      const p1y = y2 + Math.sin(angle) * triangleSize;
+
+      const p2x = x2 + Math.cos(angle + 2 * Math.PI / 3) * triangleSize;
+      const p2y = y2 + Math.sin(angle + 2 * Math.PI / 3) * triangleSize;
+
+      const p3x = x2 + Math.cos(angle + 4 * Math.PI / 3) * triangleSize;
+      const p3y = y2 + Math.sin(angle + 4 * Math.PI / 3) * triangleSize;
+
+      ctx.lineTo(p1x, p1y);
+      ctx.lineTo(p2x, p2y);
+      ctx.lineTo(p3x, p3y);
+
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function stopDrawing(e) {
+      isDrawing = false;
+      e.preventDefault();
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function fillCanvas() {
+      ctx.fillStyle = colorPicker.value;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // --- Event Listeners ---
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchcancel', stopDrawing);
+    canvas.addEventListener('touchmove', draw);
+
+    // --- Control Setup ---
+    const colorPicker = document.getElementById('colorPicker');
+    const lineWidthInput = document.getElementById('lineWidth');
+    const brushTypeSelect = document.getElementById('brushType');
+    const clearButton = document.getElementById('clearButton');
+    const eraserButton = document.getElementById('eraserButton');
+    const fillButton = document.getElementById('fillButton'); // Get fill button
+
+    eraserButton.addEventListener('click', function() {
+      isErasing = !isErasing;
+      eraserButton.textContent = isErasing ? 'Draw' : 'Eraser';
+    });
+
+    brushTypeSelect.addEventListener('change', function () {
+      brushType = this.value;
+    });
+    clearButton.addEventListener('click', clearCanvas);
+    fillButton.addEventListener('click', fillCanvas); // Add event listener for fill
+  </script>
+</body>
+</html>
