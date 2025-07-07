@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 80%, #ff006e 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, #8338ec 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, #ffbe0b 0%, transparent 50%),
+                linear-gradient(135deg, #0f0f23 0%, #1a0b2e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            /* Mobile-specific improvements */
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: gridMove 20s linear infinite;
+            will-change: transform; /* Optimize for mobile performance */
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(10px, 10px, 0); }
+        }
+
+        .calculator {
+            background: linear-gradient(145deg, 
+                rgba(30, 30, 30, 0.95) 0%, 
+                rgba(20, 20, 20, 0.98) 100%);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 110, 0.3),
+                0 0 60px rgba(131, 56, 236, 0.2),
+                inset 0 2px 15px rgba(255, 255, 255, 0.05);
+            max-width: 350px;
+            width: 100%;
+            backdrop-filter: blur(15px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .calculator::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #00ffff, #ff0080, #ffff00, #ff00ff, #00ffff);
+            border-radius: 33px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite alternate;
+            will-change: opacity; /* Optimize for mobile performance */
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .display {
+            background: linear-gradient(135deg, #000000 0%, #1a0b2e 100%);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            border-radius: 15px;
+            color: #ff0080;
+            font-size: 2.8rem;
+            font-weight: 900;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            text-align: right;
+            padding: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            height: 85px;
+            overflow: hidden;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .display::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #ff0080, #ffff00, #00ffff);
+            border-radius: 22px;
+            z-index: -1;
+            animation: displayBorder 2s linear infinite;
+        }
+
+        @keyframes displayBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            perspective: 1000px;
+        }
+
+        button {
+            border: none;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            height: 75px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        button:hover::before {
+            transform: translateX(100%);
+        }
+
+        button:hover {
+            transform: translateY(-8px) rotateX(15deg);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        button:active {
+            transform: translateY(-2px) rotateX(5deg) scale(0.95);
+            transition: all 0.1s;
+        }
+
+        .number {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            color: #00ffff;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.4),
+                inset 0 2px 10px rgba(0, 255, 255, 0.1);
+        }
+
+        .number:hover {
+            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
+            box-shadow: 
+                0 0 20px rgba(255, 255, 0, 0.4),
+                0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .operator {
+            background: linear-gradient(135deg, #ff006e 0%, #d90055 100%);
+            color: #00ffff;
+            box-shadow: 
+                0 8px 20px rgba(255, 0, 110, 0.4),
+                inset 0 2px 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .operator:hover {
+            background: linear-gradient(135deg, #ff3385 0%, #ff006e 100%);
+            color: #ffff00;
+            text-shadow: 0 0 15px #ffff00;
+            box-shadow: 
+                0 12px 30px rgba(255, 0, 110, 0.6),
+                0 0 30px rgba(255, 255, 0, 0.5);
+        }
+
+        .operator.active {
+            background: linear-gradient(135deg, #ffbe0b 0%, #ff8500 100%);
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+            animation: pulse 1s ease-in-out infinite alternate;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.8),
+                0 8px 20px rgba(255, 190, 11, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .function {
+            background: linear-gradient(135deg, #8338ec 0%, #6c2bd9 100%);
+            color: #00ff80;
+            box-shadow: 
+                0 8px 20px rgba(131, 56, 236, 0.4),
+                inset 0 2px 10px rgba(0, 255, 128, 0.2);
+        }
+
+        .function:hover {
+            background: linear-gradient(135deg, #a855f7 0%, #8338ec 100%);
+            color: #ff8000;
+            text-shadow: 0 0 15px #ff8000;
+            box-shadow: 
+                0 12px 30px rgba(131, 56, 236, 0.6),
+                0 0 30px rgba(255, 128, 0, 0.5);
+        }
+
+        .equals {
+            background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+            color: #ff0040;
+            box-shadow: 
+                0 8px 20px rgba(0, 255, 65, 0.4),
+                inset 0 2px 10px rgba(255, 0, 64, 0.3);
+        }
+
+        .equals:hover {
+            background: linear-gradient(135deg, #33ff66 0%, #00ff41 100%);
+            color: #8000ff;
+            text-shadow: 0 0 15px #8000ff;
+            box-shadow: 
+                0 12px 30px rgba(0, 255, 65, 0.6),
+                0 0 30px rgba(128, 0, 255, 0.5);
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .calculator {
+                padding: 20px;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            
+            .display {
+                font-size: 2.5rem;
+                height: 80px;
+                padding: 20px;
+                letter-spacing: 2px;
+            }
+            
+            button {
+                height: 70px;
+                font-size: 1.3rem;
+                letter-spacing: 0.5px;
+            }
+            
+            .buttons {
+                gap: 15px;
+            }
+            
+            .history {
+                font-size: 0.9rem;
+                padding: 12px 20px;
+                min-height: 35px;
+                letter-spacing: 1px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .calculator {
+                padding: 15px;
+            }
+            
+            .display {
+                font-size: 2.2rem;
+                height: 70px;
+                padding: 15px;
+                letter-spacing: 1px;
+            }
+            
+            button {
+                height: 60px;
+                font-size: 1.1rem;
+                letter-spacing: 0px;
+            }
+            
+            .buttons {
+                gap: 12px;
+            }
+            
+            .history {
+                font-size: 0.8rem;
+                padding: 10px 15px;
+                min-height: 30px;
+                letter-spacing: 0.5px;
+            }
+        }
+
+        @media (max-height: 700px) and (orientation: landscape) {
+            body {
+                padding: 5px;
+            }
+            
+            .calculator {
+                padding: 15px;
+                max-height: 90vh;
+            }
+            
+            .display {
+                height: 60px;
+                font-size: 2rem;
+                padding: 15px;
+            }
+            
+            button {
+                height: 50px;
+                font-size: 1rem;
+            }
+            
+            .buttons {
+                gap: 10px;
+            }
+            
+            .history {
+                padding: 8px 15px;
+                min-height: 25px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Touch-friendly interactions */
+        @media (hover: none) and (pointer: coarse) {
+            button:hover {
+                transform: none;
+                box-shadow: 
+                    0 8px 20px rgba(0, 0, 0, 0.4),
+                    inset 0 2px 10px rgba(255, 255, 255, 0.1);
+            }
+            
+            button:active {
+                transform: scale(0.95);
+                transition: all 0.1s;
+            }
+            
+            .operator.active {
+                animation: none;
+                transform: scale(1.02);
+            }
+        }
+
+        /* Improved touch targets */
+        button {
+            min-height: 44px; /* Apple's recommended minimum touch target */
+            touch-action: manipulation; /* Prevents zoom on double-tap */
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on iOS */
+            user-select: none; /* Prevents text selection */
+        }
+
+        .history {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            color: #ff8000;
+            font-size: 1.1rem;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-weight: 700;
+            text-align: right;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            min-height: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #ff8000;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 255, 255, 0.1),
+                0 0 15px rgba(255, 128, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="history" id="history"></div>
+        <input type="text" class="display" id="display" value="0" readonly>
+        <div class="buttons">
+            <button class="function" onclick="clearAll()">AC</button>
+            <button class="function" onclick="clearEntry()">C</button>
+            <button class="function" onclick="percentage()">%</button>
+            <button class="operator" onclick="setOperator('÷')" id="divide">÷</button>
+            
+            <button class="number" onclick="appendNumber('7')">7</button>
+            <button class="number" onclick="appendNumber('8')">8</button>
+            <button class="number" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="setOperator('×')" id="multiply">×</button>
+            
+            <button class="number" onclick="appendNumber('4')">4</button>
+            <button class="number" onclick="appendNumber('5')">5</button>
+            <button class="number" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="setOperator('-')" id="subtract">-</button>
+            
+            <button class="number" onclick="appendNumber('1')">1</button>
+            <button class="number" onclick="appendNumber('2')">2</button>
+            <button class="number" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="setOperator('+')" id="add">+</button>
+            
+            <button class="number zero" onclick="appendNumber('0')">0</button>
+            <button class="number" onclick="appendDecimal()">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let history = document.getElementById('history');
+        let currentInput = '0';
+        let previousInput = '';
+        let operator = '';
+        let waitingForOperand = false;
+
+        function updateDisplay() {
+            display.value = formatNumber(currentInput);
+        }
+
+        function formatNumber(num) {
+            if (num.length > 10) {
+                return parseFloat(num).toExponential(5);
+            }
+            return num;
+        }
+
+        function appendNumber(digit) {
+            if (waitingForOperand) {
+                currentInput = digit;
+                waitingForOperand = false;
+            } else {
+                if (currentInput === '0') {
+                    currentInput = digit;
+                } else {
+                    currentInput += digit;
+                }
+            }
+            updateDisplay();
+        }
+
+        function appendDecimal() {
+            if (waitingForOperand) {
+                currentInput = '0.';
+                waitingForOperand = false;
+            } else if (currentInput.indexOf('.') === -1) {
+                currentInput += '.';
+            }
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentInput = '0';
+            previousInput = '';
+            operator = '';
+            waitingForOperand = false;
+            history.textContent = '';
+            clearOperatorHighlight();
+            updateDisplay();
+        }
+
+        function clearEntry() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function percentage() {
+            currentInput = (parseFloat(currentInput) / 100).toString();
+            updateDisplay();
+        }
+
+        function setOperator(nextOperator) {
+            const inputValue = parseFloat(currentInput);
+
+            if (previousInput === '') {
+                previousInput = currentInput;
+            } else if (operator) {
+                const result = performCalculation();
+                currentInput = String(result);
+                previousInput = currentInput;
+                updateDisplay();
+            }
+
+            waitingForOperand = true;
+            operator = nextOperator;
+            
+            // Update history display
+            history.textContent = `${formatNumber(previousInput)} ${operator}`;
+            
+            // Highlight active operator
+            clearOperatorHighlight();
+            highlightOperator(nextOperator);
+        }
+
+        function calculate() {
+            if (operator && previousInput !== '' && !waitingForOperand) {
+                const result = performCalculation();
+                
+                // Update history with full calculation
+                history.textContent = `${formatNumber(previousInput)} ${operator} ${formatNumber(currentInput)} =`;
+                
+                currentInput = String(result);
+                previousInput = '';
+                operator = '';
+                waitingForOperand = true;
+                clearOperatorHighlight();
+                updateDisplay();
+            }
+        }
+
+        function performCalculation() {
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            let result;
+
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '×':
+                    result = prev * current;
+                    break;
+                case '÷':
+                    if (current === 0) {
+                        alert('Cannot divide by zero');
+                        return prev;
+                    }
+                    result = prev / current;
+                    break;
+                default:
+                    return current;
+            }
+
+            return Math.round(result * 1000000000) / 1000000000; // Handle floating point precision
+        }
+
+        function highlightOperator(op) {
+            const operators = {
+                '+': 'add',
+                '-': 'subtract',
+                '×': 'multiply',
+                '÷': 'divide'
+            };
+            
+            const button = document.getElementById(operators[op]);
+            if (button) {
+                button.classList.add('active');
+            }
+        }
+
+        function clearOperatorHighlight() {
+            const operatorButtons = document.querySelectorAll('.operator');
+            operatorButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9') {
+                appendNumber(key);
+            } else if (key === '.') {
+                appendDecimal();
+            } else if (key === '+') {
+                setOperator('+');
+            } else if (key === '-') {
+                setOperator('-');
+            } else if (key === '*') {
+                setOperator('×');
+            } else if (key === '/') {
+                event.preventDefault();
+                setOperator('÷');
+            } else if (key === 'Enter' || key === '=') {
+                calculate();
+            } else if (key === 'Escape') {
+                clearAll();
+            } else if (key === 'Backspace') {
+                clearEntry();
+            } else if (key === '%') {
+                percentage();
+            }
+        });
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
