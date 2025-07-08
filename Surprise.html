@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Surprise Button!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', cursive, sans-serif;
+      background: linear-gradient(135deg, #fff0f6, #f0fdf4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #ec4899;
+      margin-bottom: 20px;
+    }
+
+    #result {
+      font-size: 36px;
+      color: #22c55e;
+      margin: 30px;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: #ffffffdd;
+      box-shadow: 0 0 10px #ccc;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button {
+      padding: 16px 32px;
+      font-size: 22px;
+      background-color: #f472b6;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    button:active {
+      transform: scale(0.95);
+      background-color: #ec4899;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎁 Tap for a Surprise!</h1>
+  <div id="result">✨</div>
+  <button onclick="showSurprise()">Surprise Me!</button>
+
+  <script>
+    const surprises = [
+      "🌈 You're magical!",
+      "😸 Cat high-five!",
+      "🎉 Party time!",
+      "💖 You’re amazing!",
+      "🍭 Here's a candy!",
+      "✨ You sparkle!",
+      "🧁 Cupcake moment!",
+      "🌻 Sunshine hug!",
+      "🐸 Ribbit of joy!",
+      "🎨 Paint your dreams!",
+      "📦 Just... a box.",
+      "🍓 You're berry sweet!",
+      "🐥 Peep! You're cute!",
+      "🌟 Shooting star coming your way!",
+      "🍕 Pizza cheers!",
+      "🦄 You unicorn you!",
+      "👑 Royal surprise!",
+      "🎁 Bonus hug included!"
+    ];
+
+    function showSurprise() {
+      const pick = surprises[Math.floor(Math.random() * surprises.length)];
+      document.getElementById("result").textContent = pick;
+    }
+  </script>
+
+</body>
+</html>
