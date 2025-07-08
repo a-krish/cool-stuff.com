@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fidget App</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .fidget-container {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .fidget-button {
+      padding: 20px;
+      border: none;
+      border-radius: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      font-size: 16px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .fidget-button:active {
+      transform: scale(0.95);
+      background-color: #e0e0e0;
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .toggle {
+      background-color: #ffab91;
+    }
+
+    .toggled {
+      background-color: #a5d6a7;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌀 Fidget App</h1>
+  <div class="fidget-container">
+    <button class="fidget-button" onclick="pop()">🫧 Pop</button>
+    <button class="fidget-button" onclick="spin(this)">🔄 Spin</button>
+    <button class="fidget-button toggle" onclick="toggle(this)">🔘 Toggle</button>
+  </div>
+
+  <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+
+  <script>
+    function pop() {
+      const audio = document.getElementById('popSound');
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    function spin(btn) {
+      btn.classList.add("spinner");
+      setTimeout(() => btn.classList.remove("spinner"), 1000);
+    }
+
+    function toggle(btn) {
+      btn.classList.toggle("toggled");
+      btn.textContent = btn.classList.contains("toggled") ? "🟢 On" : "🔘 Toggle";
+    }
+  </script>
+</body>
+</html>
