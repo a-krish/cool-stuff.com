@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Button</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #fff1f2, #fde2e4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #b91c1c;
+      font-size: 5vw;
+      margin-bottom: 5vh;
+    }
+
+    #face {
+      font-size: 40vw;
+      margin: 2vh 0;
+      transition: transform 0.2s;
+      line-height: 1;
+    }
+
+    button {
+      padding: 5vh 10vw;
+      font-size: 6vw;
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:active {
+      background-color: #dc2626;
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+  <h1>Tap the Happy Button!</h1>
+  <div id="face">😄</div>
+  <button onclick="showRandomFace()">BIG RED BUTTON</button>
+
+  <script>
+    const happyFaces = [
+      "😊", "😄", "😁", "😸", "🥰", "😇", "😻", "😎", "🤩", "😺", "😹", "😋", "🎉", "✨", "💖"
+    ];
+
+    function showRandomFace() {
+      const face = happyFaces[Math.floor(Math.random() * happyFaces.length)];
+      document.getElementById("face").textContent = face;
+    }
+  </script>
+</body>
+</html>
