@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Number Generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', cursive, sans-serif;
+      background: linear-gradient(135deg, #fdf2f8, #e0f7fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #ec4899;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px #fff;
+    }
+
+    #number {
+      font-size: 100px;
+      color: #06b6d4;
+      margin: 20px;
+      text-shadow: 2px 2px #fff;
+      transition: transform 0.2s ease;
+    }
+
+    button {
+      padding: 16px 32px;
+      font-size: 24px;
+      background-color: #f472b6;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    button:active {
+      transform: scale(0.95);
+      background-color: #ec4899;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎉 Random Number Generator 🎉</h1>
+  <div id="number">?</div>
+  <button onclick="roll()">Generate!</button>
+
+  <script>
+    function roll() {
+      const num = Math.floor(Math.random() * 100) + 1;
+      const numberDiv = document.getElementById("number");
+      numberDiv.textContent = num;
+      numberDiv.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        numberDiv.style.transform = "scale(1)";
+      }, 150);
+    }
+  </script>
+
+</body>
+</html>
