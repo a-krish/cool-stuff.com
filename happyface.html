@@ -22,19 +22,19 @@
     h1 {
       color: #b91c1c;
       font-size: 5vw;
-      margin-bottom: 5vh;
+      margin-bottom: 3vh;
     }
 
     #face {
-      font-size: 40vw;
+      font-size: min(30vw, 180px); /* Big on mobile, capped at 180px */
       margin: 2vh 0;
       transition: transform 0.2s;
       line-height: 1;
     }
 
     button {
-      padding: 5vh 10vw;
-      font-size: 6vw;
+      padding: 4vh 8vw;
+      font-size: min(6vw, 24px);
       background-color: #ef4444;
       color: white;
       border: none;
