@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #fff0f6, #e0f7fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #ec4899;
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    #countdown {
+      font-size: 80px;
+      color: #06b6d4;
+      margin: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    button {
+      padding: 16px 32px;
+      font-size: 24px;
+      background-color: #f472b6;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    button:active {
+      transform: scale(0.95);
+      background-color: #ec4899;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Countdown Timer</h1>
+  <div id="countdown">10</div>
+  <button onclick="startTimer()">Start</button>
+
+  <script>
+    let timeLeft = 10;
+    let timer;
+
+    function startTimer() {
+      clearInterval(timer); // reset if clicked again
+      timeLeft = 10;
+      document.getElementById("countdown").textContent = timeLeft;
+
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("countdown").textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          document.getElementById("countdown").textContent = "⏰ Time’s up!";
+        }
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
