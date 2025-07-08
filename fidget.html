@@ -73,19 +73,21 @@
     <button class="fidget-button toggle" onclick="toggle(this)">🔘 Toggle</button>
   </div>
 
-  <!-- Local or CDN-safe short sound -->
+  <!-- Bubble pop sound: super short and mobile-safe -->
   <audio id="popSound" preload="auto">
-    <source src="https://freesound.org/data/previews/522/522858_11544945-lq.mp3" type="audio/mp3">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" type="audio/mp3">
     Your browser does not support the audio element.
   </audio>
 
   <script>
-    const audio = document.getElementById("popSound");
+    const popSound = document.getElementById("popSound");
 
     function pop() {
-      audio.currentTime = 0;
-      audio.play().catch((err) => {
-        console.log("Playback prevented:", err);
+      // For mobile browsers: ensure audio is restarted
+      popSound.pause();
+      popSound.currentTime = 0;
+      popSound.play().catch(err => {
+        console.log("Audio play error:", err);
       });
     }
 
@@ -97,11 +99,6 @@
     function toggle(btn) {
       btn.classList.toggle("toggled");
       btn.textContent = btn.classList.contains("toggled") ? "🟢 On" : "🔘 Toggle";
-    }
-  </script>
-</body>
-</html>
-
     }
   </script>
 </body>
