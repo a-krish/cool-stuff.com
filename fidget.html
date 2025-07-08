@@ -73,13 +73,20 @@
     <button class="fidget-button toggle" onclick="toggle(this)">🔘 Toggle</button>
   </div>
 
-  <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+  <!-- Local or CDN-safe short sound -->
+  <audio id="popSound" preload="auto">
+    <source src="https://freesound.org/data/previews/522/522858_11544945-lq.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
+    const audio = document.getElementById("popSound");
+
     function pop() {
-      const audio = document.getElementById('popSound');
       audio.currentTime = 0;
-      audio.play();
+      audio.play().catch((err) => {
+        console.log("Playback prevented:", err);
+      });
     }
 
     function spin(btn) {
@@ -90,6 +97,11 @@
     function toggle(btn) {
       btn.classList.toggle("toggled");
       btn.textContent = btn.classList.contains("toggled") ? "🟢 On" : "🔘 Toggle";
+    }
+  </script>
+</body>
+</html>
+
     }
   </script>
 </body>
