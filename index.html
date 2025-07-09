@@ -13,6 +13,16 @@
       padding: 40px 20px;
     }
 
+<link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker registered!'))
+      .catch(err => console.error('❌ Service Worker registration failed:', err));
+  }
+</script>
+
+    
     h1 {
       color: #ec4899;
       font-size: 32px;
