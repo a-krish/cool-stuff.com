@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Mini Web Apps</title>
+  <title>Cool Stuff Collection</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker registered'))
+        .catch(err => console.error('❌ SW failed:', err));
+    }
+  </script>
+
   <style>
     body {
       margin: 0;
@@ -13,20 +26,10 @@
       padding: 40px 20px;
     }
 
-<link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker registered!'))
-      .catch(err => console.error('❌ Service Worker registration failed:', err));
-  }
-</script>
-
-    
     h1 {
       color: #ec4899;
-      font-size: 32px;
-      margin-bottom: 20px;
+      font-size: 36px;
+      margin-bottom: 30px;
     }
 
     ul {
@@ -41,11 +44,11 @@
     a {
       display: inline-block;
       text-decoration: none;
-      font-size: 22px;
+      font-size: 20px;
       background-color: #f472b6;
       color: white;
       padding: 12px 24px;
-      border-radius: 16px;
+      border-radius: 20px;
       transition: background-color 0.2s;
     }
 
@@ -56,18 +59,18 @@
 </head>
 <body>
 
-  <h1>🎉 My Mini Web Apps Collection 🎉</h1>
+  <h1>🎉 Cool Stuff Collection 🎉</h1>
   <ul>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/paint.html">🎨 Painting App</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/Spin.html">🎡 Spin the Wheel</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/Platformer.html">🎮 Platformer Game</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/calculator.html">🧮 Calculator</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/randomnumber.html">🔢 Random Number Generator</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/happyface.html">😄 Happy Face Generator</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/confetti.html">🎊 Confetti Tapper</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/10secondtimer.html">⏱️ 10 second Timer</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/yesorno.html">🔘 Yes/No Picker</a></li>
-    <li><a href="https://a-krish.github.io/cool-stuff.com/Surprise.html">🎁 Surprise Button</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/1-paint.html">🎨 1. Painting App</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/2-spin.html">🎡 2. Spin the Wheel</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/3-platformer.html">🎮 3. Platformer Game</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/4-calculator.html">🧮 4. Calculator</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/5-random-number.html">🔢 5. Random Number Generator</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/6-happy-face.html">😄 6. Happy Face Generator</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/7-confetti.html">🎊 7. Confetti Tapper</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/8-timer.html">⏱️ 8. Timer</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/9-yes-no.html">🔘 9. Yes/No Picker</a></li>
+    <li><a href="https://a-krish.github.io/cool-stuff.com/10-surprise.html">🎁 10. Surprise Button</a></li>
   </ul>
 
 </body>
