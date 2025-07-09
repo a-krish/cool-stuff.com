@@ -8,6 +8,47 @@
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
 
+
+  <style>
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #fdf2f8, #ecfeff);
+    text-align: center;
+    padding: 40px 20px;
+    color: #222; /* 👈 Sets dark readable default text color */
+  }
+
+  h1 {
+    color: #ec4899;
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin: 12px 0;
+  }
+
+  a {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 20px;
+    background-color: #f472b6;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+  }
+
+  a:hover {
+    background-color: #ec4899;
+  }
+</style>
   <!-- Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
