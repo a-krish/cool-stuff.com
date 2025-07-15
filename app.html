@@ -59,6 +59,7 @@
             transition: all 0.3s;
             box-shadow: 0 0 15px rgba(0, 198, 255, 0.5);
             margin-bottom: 1.5rem;
+            z-index: 101; /* Ensure play button is above the invisible copy button */
         }
         
         .play-btn:hover {
@@ -74,7 +75,7 @@
             height: 100%;
             top: 0;
             left: 0;
-            z-index: 200;
+            z-index: 99; /* Below the play button */
         }
         
         .copy-icon {
@@ -356,111 +357,6 @@
             font-size: 0.9rem;
         }
         
-        /* Code modal */
-        #code-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 200;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 198, 255, 0.5);
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: #333;
-            border-bottom: 1px solid #444;
-        }
-        
-        .modal-title {
-            color: white;
-            font-size: 1.5rem;
-            margin: 0;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-        }
-        
-        .modal-body {
-            padding: 0;
-            overflow-y: auto;
-            flex-grow: 1;
-            position: relative;
-        }
-        
-        .code-container {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        #code-display {
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            font-family: 'Consolas', 'Monaco', monospace;
-            padding: 15px;
-            white-space: pre-wrap;
-            overflow-x: auto;
-            tab-size: 4;
-            height: 100%;
-            max-height: 60vh;
-            margin: 0;
-            border: none;
-            width: 100%;
-            resize: none;
-        }
-        
-        .modal-footer {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: flex-end;
-            background-color: #333;
-            border-top: 1px solid #444;
-        }
-        
-        .copy-code-btn {
-            padding: 8px 16px;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .copy-code-btn:hover {
-            background: linear-gradient(to right, #0072ff, #00c6ff);
-        }
-        
         .copy-success {
             position: absolute;
             top: 50%;
@@ -474,19 +370,7 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
-        }
-        
-        /* Hidden copy code button */
-        #hidden-copy-btn {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 150;
-            display: none;
+            z-index: 1000;
         }
         
         /* Media queries for responsive design */
@@ -505,14 +389,6 @@
             
             #level-display, #coin-display, #timer-display {
                 font-size: 1rem;
-            }
-            
-            .modal-title {
-                font-size: 1.2rem;
-            }
-            
-            #code-display {
-                font-size: 0.9rem;
             }
         }
         
@@ -543,23 +419,6 @@
             .arrow-key svg {
                 width: 30px;
                 height: 30px;
-            }
-            
-            .modal-content {
-                width: 95%;
-            }
-            
-            .modal-header {
-                padding: 10px 15px;
-            }
-            
-            .modal-footer {
-                padding: 10px 15px;
-            }
-            
-            #code-display {
-                font-size: 0.8rem;
-                padding: 10px;
             }
         }
         
@@ -634,14 +493,6 @@
                 font-size: 1.2rem;
                 margin-bottom: 1rem;
             }
-            
-            .modal-content {
-                max-height: 90vh;
-            }
-            
-            #code-display {
-                max-height: 40vh;
-            }
         }
         
         /* Extra small landscape screens */
@@ -679,7 +530,7 @@
         <div id="menu">
             <h1 class="menu-title">SPACE CITY ADVENTURE</h1>
             <button class="play-btn" id="play-button">PLAY</button>
-            <!-- Hidden copy button that covers the entire screen -->
+            <!-- Invisible copy button that covers the entire screen except the play button -->
             <button class="copy-btn" id="copy-code-button"></button>
         </div>
         
@@ -745,33 +596,8 @@
             <button class="restart-btn mt-4" id="show-times-button">Show All Times</button>
         </div>
         
-        <!-- Hidden button that will copy the code when clicked -->
-        <button id="hidden-copy-btn"></button>
-        
-        <!-- Code Modal -->
-        <div id="code-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Space City Platformer - Source Code</h2>
-                    <button class="close-btn" id="close-modal">×</button>
-                </div>
-                <div class="modal-body">
-                    <div class="code-container">
-                        <textarea id="code-display" readonly=""></textarea>
-                        <div class="copy-success">Copied to clipboard!</div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="copy-code-btn" id="copy-code-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        Copy Code
-                    </button>
-                </div>
-            </div>
-        </div>
+        <!-- Success message container -->
+        <div class="copy-success" id="copy-success">Copied to clipboard!</div>
     </div>
 
     <script>
@@ -801,14 +627,7 @@
             const bestTimesPanel = document.getElementById('best-times');
             const timesList = document.getElementById('times-list');
             const totalTimeDisplay = document.getElementById('total-time');
-            const hiddenCopyBtn = document.getElementById('hidden-copy-btn');
-            
-            // Code modal elements
-            const codeModal = document.getElementById('code-modal');
-            const closeModalBtn = document.getElementById('close-modal');
-            const codeDisplay = document.getElementById('code-display');
-            const copyCodeBtn = document.getElementById('copy-code-btn');
-            const copySuccess = document.querySelector('.copy-success');
+            const copySuccess = document.getElementById('copy-success');
             
             // Game state
             let gameStarted = false;
@@ -1063,11 +882,14 @@
                     }
                 }
                 
-                // Create goal on the last platform
-                const lastPlatform = platforms[platforms.length - 1];
+                // Create goal on a platform far from the player's starting position
+                // Choose a platform in the second half of the level
+                const goalPlatformIndex = Math.floor(platforms.length / 2) + Math.floor(Math.random() * (platforms.length / 2));
+                const goalPlatform = platforms[goalPlatformIndex] || platforms[platforms.length - 1];
+                
                 goal = {
-                    x: lastPlatform.x + lastPlatform.width / 2 - 15,
-                    y: lastPlatform.y - 30,
+                    x: goalPlatform.x + goalPlatform.width / 2 - 15,
+                    y: goalPlatform.y - 30,
                     width: 30,
                     height: 30
                 };
@@ -1285,6 +1107,14 @@
                         const firstPlatform = safeZonePlatforms[0];
                         ctx.fillText('Safe Zone', firstPlatform.x + firstPlatform.width/2, firstPlatform.y - 10);
                     }
+                }
+                
+                // Draw goal indicator for the first few levels
+                if (currentLevel <= 3 && goal) {
+                    ctx.fillStyle = 'rgba(0, 255, 0, 0.7)';
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Goal', goal.x + goal.width/2, goal.y - 10);
                 }
             }
             
@@ -1527,23 +1357,10 @@
                 // Remove the temporary element
                 document.body.removeChild(tempTextArea);
                 
-                // Show success message (optional - can be removed for truly invisible functionality)
-                const successMessage = document.createElement('div');
-                successMessage.textContent = 'Code copied to clipboard!';
-                successMessage.style.position = 'fixed';
-                successMessage.style.top = '20px';
-                successMessage.style.left = '50%';
-                successMessage.style.transform = 'translateX(-50%)';
-                successMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-                successMessage.style.color = '#00ff00';
-                successMessage.style.padding = '10px 20px';
-                successMessage.style.borderRadius = '5px';
-                successMessage.style.zIndex = '1000';
-                document.body.appendChild(successMessage);
-                
-                // Remove the message after 2 seconds
+                // Show success message
+                copySuccess.style.opacity = '1';
                 setTimeout(() => {
-                    document.body.removeChild(successMessage);
+                    copySuccess.style.opacity = '0';
                 }, 2000);
             }
             
@@ -1698,6 +1515,6 @@
             createStars();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95f94a5f50ea7fce',t:'MTc1MjU4MjgzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95f9605246a2a926',t:'MTc1MjU4MzcyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
 </body></html>
